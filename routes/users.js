@@ -46,8 +46,8 @@ router.get("/register/done",(req, res) => {
 //로그인 post요청 처리
 router.post("/login", (req, res) => {
     //로그인을할때 아이디와 비밀번호를 받는다
-    User.findOne({ email: req.body.email }, (err, user) => {
-      if (err) {
+    User.findOne({ id: req.body.id }, (err, user) => {
+      if (err||!user) {
         return res.json({
           loginSuccess: false,
           message: "존재하지 않는 아이디입니다.",

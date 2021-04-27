@@ -7,31 +7,36 @@ const userSchema = mongoose.Schema({
   name: {
     type: String,
     maxlength: 50,
+    required: true
   },
   email: {
     type: String,
     trim: true, //dhsdb 1541 @naver.com 을 dhsdb1541@naver.com로 trim
     unique: 1,
+    required: true
   },
   password: {
     type: String,
     minLength: 5,
+    required: true
   },
-  lastName: {
+  id: {
     type: String,
     maxLength: 50,
+    required: true
   },
   role: {
     type: Number,
     default: 0,
   },
-  image: String,
   token: {
     type: String,
   },
   tokenExp: {
     type: Number,
   },
+},{
+  versionkey: false
 });
 
 //save 메소드가 실행되기전에 비밀번호를 암호화하는 로직을 짜야한다
