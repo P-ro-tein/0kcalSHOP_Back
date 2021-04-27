@@ -8,7 +8,7 @@ setInterval(function(){
 }, 5000);
 
 function login() {
-    const form =document.login_form;
+    const form = document.login_form;
     form.submit();
 }
 
