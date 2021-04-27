@@ -8,14 +8,11 @@ const { User } = require("../models/User");
 const { auth } = require("../middleware/auth");
 
 
-
 //메인페이지
 router.use("/", express.static(path.resolve(__dirname,"../public","main")));
 router.get("/", auth, (req, res) => {
     if(!req.user){
         res.render('login');
-    }else if(req.user.role===1){
-        res.send('manager');
     }else{
         res.render('profile');
     }
@@ -43,16 +40,21 @@ router.get("/register/done",(req, res) => {
     res.sendFile(path.resolve(__dirname,'../views','register','register_done.html'));
 });
 
+// 관리자 페이지 이동
+router.get("/administrator", (req, res) => {
+    User.findOne({ token: req.cookies.x_auth }, (err, user) => {
+        if (user.role === 1) // 토큰을 이용해 관리자인지 확인후 관리자인 경우에만 관리자 페이지로 이동
+            res.sendFile(path.resolve(__dirname,'../views','administrator','administrator.html'));
+        else // 관리자가 아닐 경우 메인 페이지로 이동
+            res.status(200).redirect('/');
+    });
+})
+
+
 //로그인 post요청 처리
 router.post("/login", (req, res) => {
-    //로그인을할때 아이디와 비밀번호를 받는다
-    User.findOne({ email: req.body.email }, (err, user) => {
-      if (err) {
-        return res.json({
-          loginSuccess: false,
-          message: "존재하지 않는 아이디입니다.",
-        });
-      }
+  //로그인을할때 아이디와 비밀번호를 받는다
+    User.findOne({ id: req.body.id }, (err, user) => {
       user
         .comparePassword(req.body.password)
         .then((isMatch) => {
@@ -64,10 +66,16 @@ router.post("/login", (req, res) => {
           }
           //비밀번호가 일치하면 토큰을 생성한다
           //해야될것: jwt 토큰 생성하는 메소드 작성
+
           user
             .generateToken()
             .then((user) => {
-              res.cookie("x_auth", user.token).status(200).redirect('/');
+              res.cookie("x_auth", val =user.token);
+              
+              if(user.role === 1) // 맨 처음 로그인했을때만 자동으로 관리자 페이지로 이동하도록 수정
+                  res.status(200).redirect('/administrator');
+              else
+                  res.status(200).redirect('/');
             })
             .catch((err) => {
               res.status(400).send(err);
@@ -85,7 +93,7 @@ router.get("/auth", auth, (req, res) => {
     res.status(200).json({
       _id: req._id,
       id: req.id,
-      isAdmin: req.user.role === 09 ? false : true,
+      isAdmin: req.user.role === 0? false : true,
       isAuth: true,
       email: req.user.email,
       name: req.user.name,
