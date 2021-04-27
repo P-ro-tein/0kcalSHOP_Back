@@ -4,11 +4,13 @@ const port = 9000;
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const { User } = require("./models/User");
+const {Product} = require("./models/Product");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const path = require('path');
 const { auth } = require("./middleware/auth");
 const nunjucks = require('nunjucks');
+
 
 app.use(
   cors({
