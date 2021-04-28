@@ -42,7 +42,7 @@ mongoose
   .catch((err) => console.log(err));
 
 app.use('/', require('./routes/users'));
-
+app.use('/product',require('./routes/product'))
 app.use((err,req,res,next)=>{
   console.error(err);
   res.status(500).send(err.message);
