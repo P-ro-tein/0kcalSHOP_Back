@@ -61,6 +61,24 @@ router.post('/register',upload, (req, res) => {
 
 })
 
+// 해당하는 title로 포함되는 상품들을 찾아주는 코드
+// 주소뒤에 ' /product/api?title="찾고자하는 title명" ' 입력하면 찾고자하는 title명의 상품이 나온다
+router.get("/api", (req, res) => {
+    // 뒤에 title이 입력안되면 모든 상품 조회 ('/product/api' 만을 입력했을 때)
+    if(req.query.title === undefined){
+        Product.find({ }, (err, product) => {
+            const productJson = res.json(product);
+            return productJson;
+        });
+    }
+    else {
+        Product.find({ title: req.query.title }, (err, product) => {
+            const productJson = res.json(product);
+            return productJson;
+        });
+    }
+})
+
 router.post('/products', (req, res) => {
 
     let order = req.body.order ? req.body.order : "desc";
