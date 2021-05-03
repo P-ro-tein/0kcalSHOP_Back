@@ -41,10 +41,10 @@ router.get('/register/done',(req, res) => {
 });
 
 // 관리자 페이지 이동
-router.get("/administrator", (req, res) => {
+router.get("/admin", (req, res) => {
     User.findOne({ token: req.cookies.x_auth }, (err, user) => {
         if (user.role === 1) // 토큰을 이용해 관리자인지 확인후 관리자인 경우에만 관리자 페이지로 이동
-            res.sendFile(path.resolve(__dirname,'../views','administrator','administrator.html'));
+            res.sendFile(path.resolve(__dirname,'../views','admin','admin.html'));
         else // 관리자가 아닐 경우 메인 페이지로 이동
             res.status(200).redirect('/');
     });
@@ -76,7 +76,7 @@ router.post('/login', (req, res) => {
               res.cookie('x_auth', val =user.token);
 
               if(user.role === 1) // 맨 처음 로그인했을때만 자동으로 관리자 페이지로 이동하도록 수정
-                  res.status(200).redirect('/administrator');
+                  res.status(200).redirect('/admin');
               else
                   res.status(200).redirect('/');
             })
