@@ -10,6 +10,10 @@ const path = require('path');
 const { auth } = require("./middleware/auth");
 const nunjucks = require('nunjucks');
 
+const config = require("./config/key");
+
+
+
 app.use(
   cors({
     origin: true,
@@ -26,12 +30,9 @@ nunjucks.configure(path.resolve(__dirname,'views'), {
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
-//mongodb 사이트에서 카피한 주소
-const dbAddress =
-'mongodb+srv://dongjun826:eKKvisxRX9x6e7j8@zerocalorie.xguxz.mongodb.net/zeroCalorie?retryWrites=true&w=majority';
 
 mongoose
-  .connect(dbAddress, {
+  .connect(config.mongoURI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
@@ -40,8 +41,15 @@ mongoose
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.log(err));
 
-app.use('/', require('./routes/users'));
-app.use('/product',require('./routes/product'))
+app.use('/api/users', require('./routes/users'));
+app.use('/api/product',require('./routes/product'))
+
+// index.html for all page routes    html or routing and naviagtion
+// 경로와 index.html은 상황에따라 달라질 수 있음
+app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "./client", "build", "index.html"));
+});
+
 app.use((err,req,res,next)=>{
   console.error(err);
   res.status(500).send(err.message);

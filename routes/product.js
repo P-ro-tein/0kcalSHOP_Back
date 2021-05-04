@@ -47,40 +47,18 @@ router.post('/image', (req, res) => {
 
 // 폼 액션이 /product/register
 router.post('/register',upload, (req, res) => {
-    console.log(req.file);
     //받아온 정보들을 DB에 넣어 준다.
     const product = new Product(req.body)
     // single이니까 file 속성 안에 filename이 들어있으므로 안넘겨져서 그냥 타이틀사진을 그냥 넣어버렸다
     // 몇 장 사진이 추가되면 for문 돌리든지..나중에 방법을 강구해보자.
     product.images[0] = req.file.filename;
-    console.log(product);
     product.save((err) => {
         if (err) return res.status(400).json({ success: false, err })
-        return res.status(200).send('등록완료');
+        return res.status(200).json({success:true});
     })
-
-})
-
-// 해당하는 title로 포함되는 상품들을 찾아주는 코드
-// 주소뒤에 ' /product/api?title="찾고자하는 title명" ' 입력하면 찾고자하는 title명의 상품이 나온다
-router.get("/api", (req, res) => {
-    // 뒤에 title이 입력안되면 모든 상품 조회 ('/product/api' 만을 입력했을 때)
-    if(req.query.title === undefined){
-        Product.find({ }, (err, product) => {
-            const productJson = res.json(product);
-            return productJson;
-        });
-    }
-    else {
-        Product.find({ title: req.query.title }, (err, product) => {
-            const productJson = res.json(product);
-            return productJson;
-        });
-    }
 })
 
 router.post('/products', (req, res) => {
-
     let order = req.body.order ? req.body.order : "desc";
     let sortBy = req.body.sortBy ? req.body.sortBy : "_id";
     // product collection에 들어 있는 모든 상품 정보를 가져오기 
