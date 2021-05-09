@@ -4,33 +4,33 @@ const saltRounds = 10;
 const jwt = require("jsonwebtoken");
 
 const userSchema = mongoose.Schema({
-  name: {
-    type: String,
-    maxlength: 50,
+  userID: { //사용자 로그인 ID
+    type : String,
+    maxlength: 15,
   },
-  email: {
+  userName: { // 사용자 이름
+    type: String,
+    maxlength: 8,
+  },
+  email: { // 사용자 이메일 주소
     type: String,
     trim: true, //dhsdb 1541 @naver.com 을 dhsdb1541@naver.com로 trim
     unique: 1,
   },
-  password: {
+  password: { // 사용자 로그인 비밀번호
     type: String,
     minLength: 5,
   },
-  lastName: {
-    type: String,
-    maxLength: 50,
-  },
-  role: {
+  role: { // 관리자, 사용자 구분
     type: Number,
     default: 0,
   },
-  image: String,
+  defualtShipAddrName : { // 상품 상세정보에서 바로 해당 유저의 기본 주소를 보여주기위해 유저 DB에 삽입
+    type: String,
+    maxlength : 15,
+  },
   token: {
     type: String,
-  },
-  tokenExp: {
-    type: Number,
   },
 });
 
